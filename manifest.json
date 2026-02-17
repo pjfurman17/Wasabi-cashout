@@ -1,6 +1,6 @@
 {
-  "name": "End of Shift Report",
-  "short_name": "Shift Report",
+  "name": "Wasabi Cashout",
+  "short_name": "Wasabi Cashout",
   "description": "Restaurant server end-of-shift cash reconciliation",
   "start_url": "./index.html",
   "display": "standalone",
