@@ -45,10 +45,12 @@
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
+    height: 100vh;
     padding: 0;
+    margin: 0;
+    overflow: hidden;
     /* iOS safe areas */
     padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
   }
 
   /* ---- HEADER ---- */
@@ -94,12 +96,13 @@
 
   .progress-text {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--text-dim);
+    color: var(--text-mid);
     margin-bottom: 10px;
     text-align: center;
+    font-weight: 500;
   }
 
   .progress-bar-bg {
@@ -121,22 +124,26 @@
     position: relative;
     overflow: hidden;
     touch-action: pan-y;
+    height: calc(100vh - 200px); /* Full height minus header and nav */
   }
 
   .slides-wrapper {
     display: flex;
     transition: transform 0.3s ease;
+    height: 100%;
   }
 
   .slide {
     min-width: 100%;
     flex-shrink: 0;
+    height: 100%;
+    overflow-y: auto;
   }
 
   .slide-content {
     max-width: 900px;
     margin: 0 auto;
-    padding: 40px 24px 120px;
+    padding: 40px 24px 40px;
   }
 
   /* ---- NAV BUTTONS ---- */
@@ -161,10 +168,10 @@
     border-radius: 4px;
     color: var(--text);
     font-family: 'DM Mono', monospace;
-    font-size: 13px;
+    font-size: 15px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    padding: 14px 32px;
+    padding: 16px 32px;
     cursor: pointer;
     transition: all 0.15s;
     flex: 1;
@@ -241,14 +248,14 @@
 
   .card-title {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--text-dim);
+    color: var(--text-mid);
   }
 
   .card-label {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 500;
     color: var(--text);
     margin-top: 2px;
@@ -318,16 +325,16 @@
 
   .staff-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
+    font-size: 28px;
     letter-spacing: 2px;
     color: var(--text);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
 
   .staff-pct {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
+    font-size: 13px;
+    color: var(--text-mid);
     letter-spacing: 1px;
   }
 
@@ -351,10 +358,11 @@
 
   .field label {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--text-dim);
+    color: var(--text-mid);
+    font-weight: 500;
   }
 
   .input-wrap {
@@ -363,12 +371,13 @@
 
   .input-wrap span {
     position: absolute;
-    left: 14px;
+    left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-dim);
+    color: var(--text-mid);
     font-family: 'DM Mono', monospace;
-    font-size: 16px;
+    font-size: 20px;
+    font-weight: 500;
     pointer-events: none;
   }
 
@@ -379,8 +388,8 @@
     border-radius: 4px;
     color: var(--text);
     font-family: 'DM Mono', monospace;
-    font-size: 18px;
-    padding: 14px 14px 14px 32px;
+    font-size: 22px;
+    padding: 16px 16px 16px 38px;
     outline: none;
     transition: border-color 0.15s;
     -moz-appearance: textfield;
@@ -439,21 +448,23 @@
   .breakdown-row:last-child { border-bottom: none; }
 
   .breakdown-label {
-    font-size: 12px;
-    color: var(--text-mid);
+    font-size: 14px;
+    color: var(--text);
     letter-spacing: 0.5px;
+    font-weight: 500;
   }
 
   .breakdown-sub {
-    font-size: 10px;
-    color: var(--text-dim);
+    font-size: 12px;
+    color: var(--text-mid);
     margin-top: 2px;
     letter-spacing: 0.5px;
   }
 
   .breakdown-val {
-    font-size: 15px;
+    font-size: 17px;
     color: var(--text);
+    font-weight: 500;
   }
 
   .breakdown-val.neg { color: var(--negative); }
@@ -593,12 +604,13 @@
   @media (max-width: 600px) {
     .header { padding: 20px; flex-direction: column; align-items: flex-start; gap: 8px; }
     .progress-container { padding: 12px 20px; }
-    .slide-content { padding: 20px 16px 120px; }
+    .slideshow-container { height: calc(100vh - 180px); }
+    .slide-content { padding: 20px 16px 20px; }
     .input-row { grid-template-columns: 1fr; }
     .staff-grid { grid-template-columns: 1fr; }
     .final-amount { font-size: 36px; }
     .nav-buttons { padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
-    .nav-btn { padding: 12px 20px; font-size: 12px; }
+    .nav-btn { padding: 12px 20px; font-size: 14px; }
   }
 </style>
 </head>
