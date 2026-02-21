@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Wasabi Cashout</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e8b84b">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Wasabi Cashout">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon-152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icon-167.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1916;
+    --surface2: #242320;
+    --border: #2e2c28;
+    --accent: #e8b84b;
+    --accent-dim: rgba(232,184,75,0.12);
+    --accent-dim2: rgba(232,184,75,0.06);
+    --text: #f0ece2;
+    --text-dim: #7a7569;
+    --text-mid: #b0aa9e;
+    --positive: #4ecb8d;
+    --negative: #e8604b;
+    --positive-dim: rgba(78,203,141,0.1);
+    --negative-dim: rgba(232,96,75,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+    /* iOS safe areas */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* ---- HEADER ---- */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .header-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .header-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: right;
+  }
+
+  /* ---- PROGRESS BAR ---- */
+  .progress-container {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 40px;
+  }
+
+  .progress-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .progress-bar-bg {
+    height: 6px;
+    background: var(--surface);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  /* ---- SLIDESHOW ---- */
+  .slideshow-container {
+    position: relative;
+    overflow: hidden;
+    touch-action: pan-y;
+  }
+
+  .slides-wrapper {
+    display: flex;
+    transition: transform 0.3s ease;
+  }
+
+  .slide {
+    min-width: 100%;
+    flex-shrink: 0;
+  }
+
+  .slide-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 120px;
+  }
+
+  /* ---- NAV BUTTONS ---- */
+  .nav-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    z-index: 100;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .nav-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  .nav-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-dim2);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .nav-btn.next {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+
+  .nav-btn.calculate {
+    background: var(--accent);
+    color: #0f0e0c;
+    border-color: var(--accent);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+  }
+
+  .nav-btn.calculate:hover {
+    opacity: 0.9;
+  }
+
+  /* ---- LAYOUT ---- */
+  .container-old {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    display: grid;
+    gap: 24px;
+  }
+
+  /* ---- STEP CARD ---- */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .card.active {
+    border-color: var(--accent);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+    min-width: 32px;
+  }
+
+  .card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .card-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    margin-top: 2px;
+  }
+
+  .report-tag {
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid rgba(232,184,75,0.2);
+    white-space: nowrap;
+  }
+
+  .report-tag.cc {
+    background: rgba(100,160,255,0.08);
+    color: #7ab0ff;
+    border-color: rgba(100,160,255,0.2);
+  }
+
+  .card-body {
+    padding: 24px;
+  }
+
+  /* ---- STAFF SELECTOR ---- */
+  .staff-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .staff-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .staff-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim2);
+  }
+
+  .staff-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .staff-btn.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    color: var(--accent);
+    font-size: 12px;
+  }
+
+  .staff-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .staff-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  .staff-btn.selected .staff-name { color: var(--accent); }
+  .staff-btn.selected .staff-pct { color: var(--accent); opacity: 0.7; }
+
+  /* ---- INPUTS ---- */
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .input-row.single { grid-template-columns: 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .field label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  .input-wrap span {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    pointer-events: none;
+  }
+
+  .input-wrap input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    padding: 14px 14px 14px 32px;
+    outline: none;
+    transition: border-color 0.15s;
+    -moz-appearance: textfield;
+  }
+
+  .input-wrap input::-webkit-outer-spin-button,
+  .input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .input-wrap input:focus {
+    border-color: var(--accent);
+  }
+
+  .input-wrap input::placeholder {
+    color: var(--text-dim);
+    opacity: 0.4;
+  }
+
+  /* ---- RESULT ---- */
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .result-card.visible { display: block; }
+
+  .result-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .result-header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+  }
+
+  .result-body { padding: 24px; }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .breakdown-row:last-child { border-bottom: none; }
+
+  .breakdown-label {
+    font-size: 12px;
+    color: var(--text-mid);
+    letter-spacing: 0.5px;
+  }
+
+  .breakdown-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  .breakdown-val {
+    font-size: 15px;
+    color: var(--text);
+  }
+
+  .breakdown-val.neg { color: var(--negative); }
+  .breakdown-val.pos { color: var(--positive); }
+  .breakdown-val.accent { color: var(--accent); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0;
+  }
+
+  .section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 12px 0 4px;
+    opacity: 0.7;
+  }
+
+  /* ---- FINAL RESULT ---- */
+  .final-result {
+    margin-top: 20px;
+    border-radius: 4px;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .final-result.owed {
+    background: var(--negative-dim);
+    border: 1px solid rgba(232,96,75,0.3);
+  }
+
+  .final-result.due {
+    background: var(--positive-dim);
+    border: 1px solid rgba(78,203,141,0.3);
+  }
+
+  .final-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .final-sublabel {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .final-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .final-amount.owed { color: var(--negative); }
+  .final-amount.due { color: var(--positive); }
+
+  .print-btn {
+    width: 100%;
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: all 0.15s;
+  }
+
+  .print-btn:hover {
+    border-color: var(--text-dim);
+    color: var(--text);
+  }
+
+  .reset-btn {
+    width: 100%;
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.15s;
+  }
+
+  .reset-btn:hover {
+    border-color: var(--negative);
+    color: var(--negative);
+  }
+
+  /* ---- ERROR ---- */
+  .error-msg {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--negative);
+    margin-top: 12px;
+    display: none;
+    letter-spacing: 0.5px;
+  }
+
+  /* ---- PRINT ---- */
+  @media print {
+    body { background: #fff; color: #000; }
+    .header { background: #f5f5f5; border-color: #ddd; }
+    .header-title { color: #b8860b; }
+    .card, .result-card { background: #fff; border-color: #ddd; }
+    .card-header, .result-header { background: #f9f9f9; border-color: #ddd; }
+    .staff-grid, .calc-btn, .print-btn, .reset-btn { display: none; }
+    .final-result.owed { background: #fff0ee; border-color: #e8604b; }
+    .final-result.due { background: #f0fff8; border-color: #4ecb8d; }
+    .final-amount.owed { color: #c0392b; }
+    .final-amount.due { color: #27ae60; }
+    .breakdown-label { color: #555; }
+    .breakdown-val { color: #000; }
+    .input-wrap input { border-color: #ddd; background: #f9f9f9; color: #000; }
+  }
+
+  @media (max-width: 600px) {
+    .header { padding: 20px; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .progress-container { padding: 12px 20px; }
+    .slide-content { padding: 20px 16px 120px; }
+    .input-row { grid-template-columns: 1fr; }
+    .staff-grid { grid-template-columns: 1fr; }
+    .final-amount { font-size: 36px; }
+    .nav-buttons { padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+    .nav-btn { padding: 12px 20px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">Wasabi Cashout</div>
+    <div class="header-sub">Cash Reconciliation</div>
+  </div>
+  <div class="header-date" id="headerDate"></div>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress-container">
+  <div class="progress-text" id="progressText">Step 1 of 6</div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressFill" style="width: 16.66%"></div>
+  </div>
+</div>
+
+<!-- Slideshow Container -->
+<div class="slideshow-container" id="slideshowContainer">
+  <div class="slides-wrapper" id="slidesWrapper">
+
+    <!-- SLIDE 1: Staff Type -->
+    <div class="slide">
+      <div class="slide-content">
+        <div class="card active">
+          <div class="card-header">
+            <div class="step-num">01</div>
+            <div>
+              <div class="card-title">Step One</div>
+              <div class="card-label">Staff Category</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="staff-grid">
+              <button class="staff-btn" onclick="selectStaff('hibachi', this)">
+                <div class="staff-name">Hibachi</div>
+                <div class="staff-pct">8% tip out</div>
+              </button>
+              <button class="staff-btn" onclick="selectStaff('sushi', this)">
+                <div class="staff-name">Sushi</div>
+                <div class="staff-pct">6% tip out</div>
+              </button>
+              <button class="staff-btn" onclick="selectStaff('barhost', this)">
+                <div class="staff-name">Bar / Host</div>
+                <div class="staff-pct">0% tip out</div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="error-msg" id="errorMsg">⚠ Please select a staff category before continuing.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Staff Bank Report -->
+    <div class="slide">
+      <div class="slide-content">
+        <div class="card active">
+          <div class="card-header">
+            <div class="step-num">02</div>
+            <div>
+              <div class="card-title">Step Two</div>
+              <div class="card-label">Staff Bank Report</div>
+            </div>
+            <div class="report-tag">Staff Bank</div>
+          </div>
+          <div class="card-body">
+            <div class="input-row">
+              <div class="field">
+                <label>Cash Due from Server</label>
+                <div class="input-wrap">
+                  <span>$</span>
+                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="cashDue" placeholder="0.00" oninput="clearResult()">
+                </div>
+              </div>
+              <div class="field">
+                <label>Net Sales</label>
+                <div class="input-wrap">
+                  <span>$</span>
+                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="netSales" placeholder="0.00" oninput="clearResult()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Surcharges -->
+    <div class="slide">
+      <div class="slide-content">
+        <div class="card active">
+          <div class="card-header">
+            <div class="step-num">03</div>
+            <div>
+              <div class="card-title">Step Three</div>
+              <div class="card-label">Surcharges</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="input-row single">
+              <div class="field">
+                <label>Surcharge Amount <span style="color:var(--text-dim);font-size:10px;">(enter 0 if none)</span></label>
+                <div class="input-wrap">
+                  <span>$</span>
+                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="surcharge" placeholder="0.00" value="" oninput="clearResult()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Order Discounts -->
+    <div class="slide">
+      <div class="slide-content">
+        <div class="card active">
+          <div class="card-header">
+            <div class="step-num">04</div>
+            <div>
+              <div class="card-title">Step Four</div>
+              <div class="card-label">Order Discounts</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="input-row single">
+              <div class="field">
+                <label>Order Discount Amount <span style="color:var(--text-dim);font-size:10px;">(enter 0 if none)</span></label>
+                <div class="input-wrap">
+                  <span>$</span>
+                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="orderDiscount" placeholder="0.00" value="" oninput="clearResult()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Cash Discounts -->
+    <div class="slide">
+      <div class="slide-content">
+        <div class="card active">
+          <div class="card-header">
+            <div class="step-num">05</div>
+            <div>
+              <div class="card-title">Step Five</div>
+              <div class="card-label">Cash Discounts</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="input-row single">
+              <div class="field">
+                <label>Cash Discount Amount <span style="color:var(--text-dim);font-size:10px;">(enter 0 if none)</span></label>
+                <div class="input-wrap">
+                  <span>$</span>
+                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="cashDiscount" placeholder="0.00" value="" oninput="clearResult()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Credit Card Report -->
+    <div class="slide">
+      <div class="slide-content">
+        <div class="card active">
+          <div class="card-header">
+            <div class="step-num">06</div>
+            <div>
+              <div class="card-title">Step Six</div>
+              <div class="card-label">Credit Card Report</div>
+            </div>
+            <div class="report-tag cc">Credit Card</div>
+          </div>
+          <div class="card-body">
+            <div class="input-row">
+              <div class="field">
+                <label>Total Amount Collected</label>
+                <div class="input-wrap">
+                  <span>$</span>
+                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="ccTotal" placeholder="0.00" oninput="clearResult()">
+                </div>
+              </div>
+              <div class="field">
+                <label>Card Price</label>
+                <div class="input-wrap">
+                  <span>$</span>
+                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="cardPrice" placeholder="0.00" oninput="clearResult()">
+                </div>
+              </div>
+            </div>
+            <div class="input-row single" style="margin-top:16px;">
+              <div class="field">
+                <label>Tips</label>
+                <div class="input-wrap">
+                  <span>$</span>
+                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="ccTips" placeholder="0.00" oninput="clearResult()">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Result -->
+    <div class="slide">
+      <div class="slide-content">
+        <div class="result-card visible">
+          <div class="result-header">
+            <div class="result-header-title">Shift Breakdown</div>
+            <div id="staffBadge" class="report-tag" style="margin-left:auto;"></div>
+          </div>
+          <div class="result-body">
+            <!-- Section A: Tip-Out Calculation -->
+            <div class="section-title">Tip-Out Calculation</div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">Net Sales</div><div class="breakdown-sub">From Staff Bank report</div></div>
+              <div class="breakdown-val" id="r-netSales"></div>
+            </div>
+            <div class="breakdown-row" id="r-surchargeRow" style="display:none;">
+              <div><div class="breakdown-label">Surcharge</div></div>
+              <div class="breakdown-val" id="r-surcharge"></div>
+            </div>
+            <div class="breakdown-row" id="r-orderDiscRow" style="display:none;">
+              <div><div class="breakdown-label">+ Order Discounts Added Back</div></div>
+              <div class="breakdown-val pos" id="r-orderDisc"></div>
+            </div>
+            <div class="breakdown-row" id="r-cashDiscRow" style="display:none;">
+              <div><div class="breakdown-label">+ Cash Discounts Added Back</div></div>
+              <div class="breakdown-val pos" id="r-cashDisc"></div>
+            </div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">Tip-Out Base</div><div class="breakdown-sub">Net Sales + Discounts − Surcharge</div></div>
+              <div class="breakdown-val accent" id="r-tipBase"></div>
+            </div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label" id="r-tipOutLabel">Tip-Out Amount</div></div>
+              <div class="breakdown-val neg" id="r-tipOut"></div>
+            </div>
+            <div class="divider"></div>
+            <!-- Section B: CC Reconciliation -->
+            <div class="section-title">Credit Card Reconciliation</div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">Total Amount Collected</div><div class="breakdown-sub">From Credit Card report</div></div>
+              <div class="breakdown-val" id="r-ccTotal"></div>
+            </div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">Card Price</div></div>
+              <div class="breakdown-val neg" id="r-cardPrice"></div>
+            </div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">CC Difference</div><div class="breakdown-sub">Total Collected − Card Price</div></div>
+              <div class="breakdown-val accent" id="r-ccDiff"></div>
+            </div>
+            <div class="divider"></div>
+            <!-- Section C: Cash Reconciliation -->
+            <div class="section-title">Cash Reconciliation</div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">Cash Due from Server</div><div class="breakdown-sub">From Staff Bank report</div></div>
+              <div class="breakdown-val" id="r-cashDue"></div>
+            </div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">− CC Difference</div><div class="breakdown-sub">Subtract CC collected from cash due</div></div>
+              <div class="breakdown-val neg" id="r-ccDiff2"></div>
+            </div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">Adjusted Cash</div></div>
+              <div class="breakdown-val accent" id="r-adjustedCash"></div>
+            </div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">+ Tip-Out Amount</div></div>
+              <div class="breakdown-val neg" id="r-tipOut2"></div>
+            </div>
+            <!-- Surcharge split (only if surcharge > 0) -->
+            <div id="r-surchargeDetailRow" style="display:none;">
+              <div class="breakdown-row">
+                <div><div class="breakdown-label">Surcharge — Server Keeps (55%)</div><div class="breakdown-sub">Server retains in cash</div></div>
+                <div class="breakdown-val pos" id="r-surchargeServerCash"></div>
+              </div>
+              <div class="breakdown-row">
+                <div><div class="breakdown-label">Surcharge — To Paycheck (45%)</div><div class="breakdown-sub">Applied to server's paycheck</div></div>
+                <div class="breakdown-val" id="r-surchargePaycheck"></div>
+              </div>
+            </div>
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">+ 3% of CC Tips</div><div class="breakdown-sub">Processing fee on CC tips</div></div>
+              <div class="breakdown-val neg" id="r-ccTipsFee"></div>
+            </div>
+            <div class="divider"></div>
+            <!-- CC Tips reference -->
+            <div class="breakdown-row">
+              <div><div class="breakdown-label">CC Tips (reference)</div><div class="breakdown-sub">From Credit Card report</div></div>
+              <div class="breakdown-val" id="r-ccTips"></div>
+            </div>
+            <!-- Final -->
+            <div class="final-result" id="finalResult">
+              <div>
+                <div class="final-label" id="finalLabel"></div>
+                <div class="final-sublabel" id="finalSub"></div>
+              </div>
+              <div class="final-amount" id="finalAmount"></div>
+            </div>
+          </div>
+          <div style="padding: 0 24px 24px;">
+            <button class="print-btn" onclick="window.print()">⎙ Print Report</button>
+            <button class="reset-btn" onclick="resetForm()">↺ New Report</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Navigation Buttons -->
+<div class="nav-buttons">
+  <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>← Back</button>
+  <button class="nav-btn next" id="nextBtn" onclick="nextSlide()">Next →</button>
+  <button class="nav-btn calculate" id="calcBtn" onclick="calculate()" style="display:none;">Calculate</button>
+</div>
+
+<script>
+  // Set date
+  const now = new Date();
+  document.getElementById('headerDate').innerHTML =
+    now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) +
+    '<br>' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+  let selectedStaff = null;
+  const tipRates = { hibachi: 0.08, sushi: 0.06, barhost: 0.00 };
+  const staffLabels = { hibachi: 'Hibachi — 8%', sushi: 'Sushi — 6%', barhost: 'Bar / Host — 0%' };
+
+  // Slideshow state
+  let currentSlide = 0;
+  const totalSlides = 6; // 6 input slides (result slide is 7th, shown after calc)
+  const slidesWrapper = document.getElementById('slidesWrapper');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const calcBtn = document.getElementById('calcBtn');
+  const progressText = document.getElementById('progressText');
+  const progressFill = document.getElementById('progressFill');
+
+  // Touch/swipe handling
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const container = document.getElementById('slideshowContainer');
+
+  container.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+
+  container.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  });
+
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    if (touchStartX - touchEndX > swipeThreshold) nextSlide(); // swipe left
+    if (touchEndX - touchStartX > swipeThreshold) prevSlide(); // swipe right
+  }
+
+  function updateSlideshow() {
+    const slideWidth = container.offsetWidth;
+    slidesWrapper.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+    
+    // Update progress
+    const progress = ((currentSlide + 1) / totalSlides) * 100;
+    progressFill.style.width = progress + '%';
+    progressText.textContent = `Step ${currentSlide + 1} of ${totalSlides}`;
+    
+    // Update buttons
+    prevBtn.disabled = currentSlide === 0;
+    
+    if (currentSlide === totalSlides - 1) {
+      nextBtn.style.display = 'none';
+      calcBtn.style.display = 'block';
+    } else {
+      nextBtn.style.display = 'block';
+      calcBtn.style.display = 'none';
+    }
+  }
+
+  function nextSlide() {
+    // Validation for step 1
+    if (currentSlide === 0 && !selectedStaff) {
+      document.getElementById('errorMsg').style.display = 'block';
+      return;
+    }
+    
+    if (currentSlide < totalSlides - 1) {
+      currentSlide++;
+      updateSlideshow();
+    }
+  }
+
+  function prevSlide() {
+    if (currentSlide > 0) {
+      currentSlide--;
+      updateSlideshow();
+    }
+  }
+
+  function selectStaff(type, btn) {
+    selectedStaff = type;
+    document.querySelectorAll('.staff-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('errorMsg').style.display = 'none';
+  }
+
+  function val(id) {
+    return parseFloat(document.getElementById(id).value) || 0;
+  }
+
+  function fmt(n) {
+    return '$' + Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function clearResult() {
+    // Don't need this for slideshow version
+  }
+
+  function calculate() {
+    if (!selectedStaff) {
+      currentSlide = 0;
+      updateSlideshow();
+      document.getElementById('errorMsg').style.display = 'block';
+      return;
+    }
+
+    const cashDue      = val('cashDue');
+    const netSales     = val('netSales');
+    const surcharge    = val('surcharge');
+    const orderDisc    = val('orderDiscount');
+    const cashDisc     = val('cashDiscount');
+    const ccTotal      = val('ccTotal');
+    const cardPrice    = val('cardPrice');
+    const ccTips       = val('ccTips');
+    const rate         = tipRates[selectedStaff];
+
+    // Step 1: Tip-out base = Net Sales + Order Discounts + Cash Discounts − Surcharges
+    const tipBase = netSales + orderDisc + cashDisc - surcharge;
+    const tipOut  = tipBase * rate;
+
+    // Step 2: CC Difference = CC Total Collected − Card Price
+    const ccDiff = ccTotal - cardPrice;
+
+    // Step 3: Adjusted Cash = Cash Due − CC Difference
+    const adjustedCash = cashDue - ccDiff;
+
+    // Step 4: Base cash owed = Adjusted Cash + Tip-Out
+    let cashOwed = adjustedCash + tipOut;
+
+    // Step 5: Surcharge split — server keeps 55% in cash (reduces cash owed), 45% to paycheck
+    const surchargeServerCash   = surcharge * 0.55;
+    const surchargeToPaycheck   = surcharge * 0.45;
+    if (surcharge > 0) cashOwed -= surchargeServerCash;
+
+    // Step 6: Add 3% of CC Tips to cash owed
+    const ccTipsFee = ccTips * 0.03;
+    cashOwed += ccTipsFee;
+
+    // Populate breakdown
+    document.getElementById('r-netSales').textContent    = fmt(netSales);
+    document.getElementById('r-tipBase').textContent     = fmt(tipBase);
+    document.getElementById('r-tipOutLabel').textContent = `Tip-Out (${(rate*100).toFixed(0)}% of ${fmt(tipBase)})`;
+    document.getElementById('r-tipOut').textContent      = fmt(tipOut);
+    document.getElementById('r-tipOut2').textContent     = '+ ' + fmt(tipOut);
+    document.getElementById('r-cashDue').textContent     = fmt(cashDue);
+    document.getElementById('r-ccTotal').textContent     = fmt(ccTotal);
+    document.getElementById('r-cardPrice').textContent   = '− ' + fmt(cardPrice);
+    document.getElementById('r-ccDiff').textContent      = fmt(ccDiff);
+    document.getElementById('r-ccDiff2').textContent     = '− ' + fmt(ccDiff);
+    document.getElementById('r-adjustedCash').textContent = fmt(adjustedCash);
+    document.getElementById('r-ccTips').textContent      = fmt(ccTips);
+    document.getElementById('r-ccTipsFee').textContent   = '+ ' + fmt(ccTipsFee);
+
+    // Surcharge rows
+    const surRow        = document.getElementById('r-surchargeRow');
+    const surDetailRow  = document.getElementById('r-surchargeDetailRow');
+    if (surcharge > 0) {
+      surRow.style.display       = 'flex';
+      surDetailRow.style.display = 'block';
+      document.getElementById('r-surcharge').textContent          = fmt(surcharge);
+      document.getElementById('r-surchargeServerCash').textContent = '− ' + fmt(surchargeServerCash);
+      document.getElementById('r-surchargePaycheck').textContent   = fmt(surchargeToPaycheck);
+    } else {
+      surRow.style.display       = 'none';
+      surDetailRow.style.display = 'none';
+    }
+
+    // Order discount row
+    const odRow = document.getElementById('r-orderDiscRow');
+    if (orderDisc > 0) {
+      odRow.style.display = 'flex';
+      document.getElementById('r-orderDisc').textContent = '+ ' + fmt(orderDisc);
+    } else {
+      odRow.style.display = 'none';
+    }
+
+    // Cash discount row
+    const cdRow = document.getElementById('r-cashDiscRow');
+    if (cashDisc > 0) {
+      cdRow.style.display = 'flex';
+      document.getElementById('r-cashDisc').textContent = '+ ' + fmt(cashDisc);
+    } else {
+      cdRow.style.display = 'none';
+    }
+
+    // Staff badge
+    document.getElementById('staffBadge').textContent = staffLabels[selectedStaff];
+
+    // Final result
+    const finalResult = document.getElementById('finalResult');
+    const finalLabel  = document.getElementById('finalLabel');
+    const finalSub    = document.getElementById('finalSub');
+    const finalAmount = document.getElementById('finalAmount');
+
+    finalResult.className = 'final-result';
+
+    if (cashOwed >= 0) {
+      finalResult.classList.add('owed');
+      finalLabel.textContent  = 'Cash Owed to Restaurant';
+      finalSub.textContent    = 'Server turns in this amount';
+      finalAmount.className   = 'final-amount owed';
+      finalAmount.textContent = fmt(cashOwed);
+    } else {
+      finalResult.classList.add('due');
+      finalLabel.textContent  = 'Cash Due to Server';
+      finalSub.textContent    = 'Restaurant owes server this amount';
+      finalAmount.className   = 'final-amount due';
+      finalAmount.textContent = fmt(Math.abs(cashOwed));
+    }
+
+    // Show result slide
+    currentSlide = 6; // Go to result slide (7th slide, index 6)
+    updateSlideshow();
+    
+    // Hide nav buttons on result screen
+    document.querySelector('.nav-buttons').style.display = 'none';
+    
+    // Update progress for result
+    progressText.textContent = 'Results';
+    progressFill.style.width = '100%';
+  }
+
+  function resetForm() {
+    selectedStaff = null;
+    document.querySelectorAll('.staff-btn').forEach(b => b.classList.remove('selected'));
+    ['cashDue','netSales','surcharge','orderDiscount','cashDiscount','ccTotal','cardPrice','ccTips']
+      .forEach(id => document.getElementById(id).value = '');
+    document.getElementById('errorMsg').style.display = 'none';
+    
+    // Reset slideshow
+    currentSlide = 0;
+    updateSlideshow();
+    document.querySelector('.nav-buttons').style.display = 'flex';
+  }
+
+  // Initialize
+  updateSlideshow();
+
+  // Register service worker for PWA / offline support
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+
+  // Show iOS install banner if not already installed
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone;
+  if (isIOS && !isStandalone) {
+    const banner = document.createElement('div');
+    banner.style.cssText = `
+      position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+      background: #242320; border: 1px solid #e8b84b; border-radius: 8px;
+      padding: 12px 20px; font-family: 'DM Mono', monospace; font-size: 12px;
+      color: #e8b84b; letter-spacing: 1px; text-align: center; z-index: 9999;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5); max-width: 300px; width: 90%;
+    `;
+    banner.innerHTML = `
+      <div style="margin-bottom:6px; font-size:14px;">📲 Install this App</div>
+      <div style="color:#b0aa9e; letter-spacing:0.5px; line-height:1.5;">
+        Tap <strong style="color:#e8b84b">Share</strong> then
+        <strong style="color:#e8b84b">Add to Home Screen</strong>
+      </div>
+      <div style="margin-top:10px;">
+        <button onclick="this.parentElement.parentElement.remove()" style="
+          background:transparent; border:1px solid #2e2c28; color:#7a7569;
+          font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px;
+          padding:6px 16px; border-radius:4px; cursor:pointer;">
+          Dismiss
+        </button>
+      </div>
+    `;
+    document.body.appendChild(banner);
+    setTimeout(() => banner.remove(), 12000);
+  }
+</script>
+</body>
+</html>
