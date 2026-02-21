@@ -285,6 +285,33 @@
     padding: 24px;
   }
 
+  /* ---- REFERENCE IMAGE ---- */
+  .reference-image {
+    margin-bottom: 24px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--accent);
+    background: var(--surface2);
+  }
+
+  .reference-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .reference-label {
+    background: var(--accent-dim);
+    border-bottom: 1px solid var(--accent);
+    padding: 10px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+  }
+
   /* ---- STAFF SELECTOR ---- */
   .staff-grid {
     display: grid;
@@ -681,6 +708,11 @@
             <div class="report-tag">Staff Bank</div>
           </div>
           <div class="card-body">
+            <div class="reference-image">
+              <div class="reference-label">📄 Find these on your Staff Bank Report</div>
+              <img src="staff-bank-top.jpg" alt="Staff Bank Report showing Net Sales">
+              <img src="staff-bank-bottom.jpg" alt="Staff Bank Report showing Cash Due from Server" style="margin-top: 8px;">
+            </div>
             <div class="input-row">
               <div class="field">
                 <label>Cash Due from Server</label>
@@ -714,6 +746,10 @@
             </div>
           </div>
           <div class="card-body">
+            <div class="reference-image">
+              <div class="reference-label">📄 Find "Surcharge" on your Staff Bank Report</div>
+              <img src="staff-bank-top.jpg" alt="Staff Bank Report showing Surcharge line">
+            </div>
             <div class="input-row single">
               <div class="field">
                 <label>Surcharge Amount <span style="color:var(--text-dim);font-size:10px;">(enter 0 if none)</span></label>
@@ -740,6 +776,10 @@
             </div>
           </div>
           <div class="card-body">
+            <div class="reference-image">
+              <div class="reference-label">📄 Find "Order Discounts" on your Staff Bank Report</div>
+              <img src="staff-bank-top.jpg" alt="Staff Bank Report showing Order Discounts line">
+            </div>
             <div class="input-row single">
               <div class="field">
                 <label>Order Discount Amount <span style="color:var(--text-dim);font-size:10px;">(enter 0 if none)</span></label>
@@ -766,6 +806,10 @@
             </div>
           </div>
           <div class="card-body">
+            <div class="reference-image">
+              <div class="reference-label">📄 Find "Cash Discount" on your Staff Bank Report</div>
+              <img src="staff-bank-top.jpg" alt="Staff Bank Report showing Cash Discount line">
+            </div>
             <div class="input-row single">
               <div class="field">
                 <label>Cash Discount Amount <span style="color:var(--text-dim);font-size:10px;">(enter 0 if none)</span></label>
@@ -793,6 +837,10 @@
             <div class="report-tag cc">Credit Card</div>
           </div>
           <div class="card-body">
+            <div class="reference-image">
+              <div class="reference-label">📄 Find these on your Credit Card Report (Sales by Employees)</div>
+              <img src="credit-card-report.jpg" alt="Credit Card Report showing Tips, Card Price, and Amount Collected">
+            </div>
             <div class="input-row">
               <div class="field">
                 <label>Total Amount Collected</label>
