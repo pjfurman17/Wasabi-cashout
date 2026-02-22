@@ -875,14 +875,16 @@
               <div class="reference-label">📄 Find on Credit Card Report → TIPS, CARD PRICE, AMOUNT COLLECTED</div>
               <img src="credit-card-zoom.jpg" alt="Credit Card Report">
             </div>
-            <div class="input-row">
+            <div class="input-row single">
               <div class="field">
-                <label>Total Amount Collected</label>
+                <label>Tips</label>
                 <div class="input-wrap">
                   <span>$</span>
-                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="ccTotal" placeholder="0.00" oninput="clearResult()">
+                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="ccTips" placeholder="0.00" oninput="clearResult()">
                 </div>
               </div>
+            </div>
+            <div class="input-row" style="margin-top:12px;">
               <div class="field">
                 <label>Card Price</label>
                 <div class="input-wrap">
@@ -890,13 +892,11 @@
                   <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="cardPrice" placeholder="0.00" oninput="clearResult()">
                 </div>
               </div>
-            </div>
-            <div class="input-row single" style="margin-top:16px;">
               <div class="field">
-                <label>Tips</label>
+                <label>Amount Collected</label>
                 <div class="input-wrap">
                   <span>$</span>
-                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="ccTips" placeholder="0.00" oninput="clearResult()">
+                  <input type="text" inputmode="decimal" pattern="[0-9]*\.?[0-9]*" id="ccTotal" placeholder="0.00" oninput="clearResult()">
                 </div>
               </div>
             </div>
