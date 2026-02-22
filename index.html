@@ -51,16 +51,34 @@
     overflow: hidden;
     /* iOS safe areas */
     padding-top: env(safe-area-inset-top);
+    /* Background logo watermark */
+    background-image: url('wasabi-logo-bg.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 300px;
+    background-attachment: fixed;
   }
 
   /* ---- HEADER ---- */
   .header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 28px 40px 24px;
+    padding: 20px 40px 20px;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .header-content {
+    flex: 1;
   }
 
   .header-title {
@@ -85,6 +103,7 @@
     font-size: 12px;
     color: var(--text-dim);
     text-align: right;
+    flex-shrink: 0;
   }
 
   /* ---- PROGRESS BAR ---- */
@@ -636,7 +655,10 @@
   }
 
   @media (max-width: 600px) {
-    .header { padding: 16px; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .header { padding: 16px; flex-direction: row; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .header-logo { width: 50px; height: 50px; }
+    .header-content { flex: 1; min-width: 150px; }
+    .header-date { flex-basis: 100%; text-align: left; margin-top: 8px; }
     .progress-container { padding: 10px 16px; }
     .slideshow-container { height: calc(100vh - 165px); }
     .slide-content { padding: 12px 12px 12px; }
@@ -655,7 +677,8 @@
 <body>
 
 <div class="header">
-  <div>
+  <img src="wasabi-logo-small.jpg" alt="Wasabi Logo" class="header-logo">
+  <div class="header-content">
     <div class="header-title">Wasabi Cashout</div>
     <div class="header-sub">Cash Reconciliation</div>
   </div>
