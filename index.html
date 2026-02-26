@@ -1090,20 +1090,33 @@
     const slideWidth = container.offsetWidth;
     slidesWrapper.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
     
-    // Update progress
-    const progress = ((currentSlide + 1) / totalSlides) * 100;
-    progressFill.style.width = progress + '%';
-    progressText.textContent = `Step ${currentSlide + 1} of ${totalSlides}`;
+    // Check if we're on the result slide (slide 7, the 8th slide)
+    const isResultSlide = currentSlide === 7;
     
-    // Update buttons
-    prevBtn.disabled = currentSlide === 0;
-    
-    if (currentSlide === totalSlides - 1) {
-      nextBtn.style.display = 'none';
-      calcBtn.style.display = 'block';
+    if (isResultSlide) {
+      // On result slide - hide nav buttons, show custom progress
+      document.querySelector('.nav-buttons').style.display = 'none';
+      progressText.textContent = 'Results';
+      progressFill.style.width = '100%';
     } else {
-      nextBtn.style.display = 'block';
-      calcBtn.style.display = 'none';
+      // On input slides - show nav buttons, normal progress
+      document.querySelector('.nav-buttons').style.display = 'flex';
+      
+      // Update progress
+      const progress = ((currentSlide + 1) / totalSlides) * 100;
+      progressFill.style.width = progress + '%';
+      progressText.textContent = `Step ${currentSlide + 1} of ${totalSlides}`;
+      
+      // Update buttons
+      prevBtn.disabled = currentSlide === 0;
+      
+      if (currentSlide === totalSlides - 1) {
+        nextBtn.style.display = 'none';
+        calcBtn.style.display = 'block';
+      } else {
+        nextBtn.style.display = 'block';
+        calcBtn.style.display = 'none';
+      }
     }
   }
 
@@ -1121,7 +1134,11 @@
   }
 
   function prevSlide() {
-    if (currentSlide > 0) {
+    // Allow going back from result slide to last input slide
+    if (currentSlide === 7) {
+      currentSlide = 6; // Go back to step 7 (Credit Card)
+      updateSlideshow();
+    } else if (currentSlide > 0) {
       currentSlide--;
       updateSlideshow();
     }
@@ -1261,13 +1278,6 @@
     // Show result slide
     currentSlide = 7; // Go to result slide (8th slide, index 7)
     updateSlideshow();
-    
-    // Hide nav buttons on result screen
-    document.querySelector('.nav-buttons').style.display = 'none';
-    
-    // Update progress for result
-    progressText.textContent = 'Results';
-    progressFill.style.width = '100%';
   }
 
   function resetForm() {
