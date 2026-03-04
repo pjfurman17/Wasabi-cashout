@@ -418,6 +418,16 @@
     font-weight: 500;
   }
 
+  .tap-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    text-align: center;
+    margin-top: 8px;
+    letter-spacing: 1px;
+    opacity: 0.7;
+  }
+
   .input-wrap {
     position: relative;
   }
@@ -1082,39 +1092,8 @@
 
   function handleSwipe() {
     const swipeThreshold = 50;
-    if (touchStartX - touchEndX > swipeThreshold) {
-      nextSlide(); // swipe left - nextSlide will handle focusing
-    }
-    if (touchEndX - touchStartX > swipeThreshold) {
-      prevSlide(); // swipe right
-    }
-  }
-
-  function focusCurrentInput() {
-    // Map slide index to input ID
-    const inputMap = {
-      1: 'cashDue',
-      2: 'netSales',
-      3: 'surcharge',
-      4: 'orderDiscount',
-      5: 'cashDiscount',
-      6: 'ccTips'
-    };
-    
-    const inputId = inputMap[currentSlide];
-    if (inputId) {
-      // Use requestAnimationFrame to ensure DOM is ready
-      requestAnimationFrame(() => {
-        const input = document.getElementById(inputId);
-        if (input) {
-          input.focus();
-          // Try to trigger keyboard on iOS
-          if (input.setSelectionRange) {
-            input.setSelectionRange(0, input.value.length);
-          }
-        }
-      });
-    }
+    if (touchStartX - touchEndX > swipeThreshold) nextSlide(); // swipe left
+    if (touchEndX - touchStartX > swipeThreshold) prevSlide(); // swipe right
   }
 
   function updateSlideshow() {
@@ -1161,9 +1140,6 @@
     if (currentSlide < totalSlides - 1) {
       currentSlide++;
       updateSlideshow();
-      
-      // Focus input immediately after navigation (during user interaction)
-      focusCurrentInput();
     }
   }
 
