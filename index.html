@@ -1117,6 +1117,26 @@
         nextBtn.style.display = 'block';
         calcBtn.style.display = 'none';
       }
+      
+      // Auto-focus the input field on this step to bring up keyboard
+      setTimeout(() => {
+        const inputMap = {
+          1: 'cashDue',
+          2: 'netSales',
+          3: 'surcharge',
+          4: 'orderDiscount',
+          5: 'cashDiscount',
+          6: 'ccTips'
+        };
+        
+        const inputId = inputMap[currentSlide];
+        if (inputId) {
+          const input = document.getElementById(inputId);
+          if (input) {
+            input.focus();
+          }
+        }
+      }, 300); // Small delay to let slide animation complete
     }
   }
 
