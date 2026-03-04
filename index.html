@@ -1134,9 +1134,12 @@
           const input = document.getElementById(inputId);
           if (input) {
             input.focus();
+            input.click(); // iOS sometimes needs a click event
+            // Force iOS keyboard
+            input.setSelectionRange(0, input.value.length);
           }
         }
-      }, 300); // Small delay to let slide animation complete
+      }, 350); // Slightly longer delay for iOS
     }
   }
 
